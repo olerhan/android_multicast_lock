@@ -16,10 +16,10 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    final AndroidMulticastLock plugin = AndroidMulticastLock();
-    final String? version = await plugin.getPlatformVersion();
-    // The version string depends on the host platform running the test, so
-    // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+    expect(await AndroidMulticastLock().isHeld(), false);
+    AndroidMulticastLock().acquire();
+    expect(await AndroidMulticastLock().isHeld(), true);
+    AndroidMulticastLock().release();
+    expect(await AndroidMulticastLock().isHeld(), false);
   });
 }
