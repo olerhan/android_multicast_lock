@@ -1,16 +1,21 @@
+import 'package:flutter/foundation.dart';
 
 import 'android_multicast_lock_platform_interface.dart';
 
 class AndroidMulticastLock {
-  Future<void> acquire() {
-    return AndroidMulticastLockPlatform.instance.acquire();
+  Future<void> acquire() async {
+    if ( defaultTargetPlatform == TargetPlatform.android )
+        return AndroidMulticastLockPlatform.instance.acquire();
   }
 
-  Future<void> release() {
-    return AndroidMulticastLockPlatform.instance.release();
+  Future<void> release() async {
+    if ( defaultTargetPlatform == TargetPlatform.android )
+        return AndroidMulticastLockPlatform.instance.release();
   }
 
-  Future<bool> isHeld() {
-    return AndroidMulticastLockPlatform.instance.isHeld();
+  Future<bool> isHeld() async {
+    if ( defaultTargetPlatform == TargetPlatform.android )
+        return AndroidMulticastLockPlatform.instance.isHeld();
+    return false;
   }
 }
