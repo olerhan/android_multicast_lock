@@ -8,26 +8,46 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
-/** AndroidMulticastLockPlugin */
+import android.content.Context;
+import android.net.wifi.WifiManager;
+
 public class AndroidMulticastLockPlugin implements FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
+  private WifiManager.MulticastLock mcast_lock;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    WifiManager wifi = (WifiManager) flutterPluginBinding.getApplicationContext()
+                                           .getApplicationContext()
+                                           .getSystemService(Context.WIFI_SERVICE);
+    if ( wifi != null ) {
+        mcast_lock = wifi.createMulticastLock("arobinson434_mcast_lock");
+    }
+
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "android_multicast_lock");
     channel.setMethodCallHandler(this);
   }
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
+    if ( mcast_lock == null ) {
+      result.error("UNAVAILABLE", "MCast Lock not found", null);
     } else {
-      result.notImplemented();
+      try {
+        if (call.method.equals("acquire")) {
+          mcast_lock.acquire();
+          result.success(null);
+        } else if (call.method.equals("release")) {
+          mcast_lock.release();
+          result.success(null);
+        } else if (call.method.equals("isHeld")) {
+          result.success(mcast_lock.isHeld());
+        }else {
+          result.notImplemented();
+        }
+      } catch ( RuntimeException e ) {
+        result.error("UNAVAILABLE", e.toString(), null);
+      }
     }
   }
 

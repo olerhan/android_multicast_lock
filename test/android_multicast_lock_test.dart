@@ -8,8 +8,20 @@ class MockAndroidMulticastLockPlatform
     with MockPlatformInterfaceMixin
     implements AndroidMulticastLockPlatform {
 
+  static bool lock_set = false;
+
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<void> acquire() async {
+    lock_set = true;
+  }
+
+  @override
+  Future<void> release()  async{
+    lock_set = false;
+  }
+
+  @override
+  Future<bool> isHeld() => Future.value(lock_set);
 }
 
 void main() {
@@ -19,11 +31,23 @@ void main() {
     expect(initialPlatform, isInstanceOf<MethodChannelAndroidMulticastLock>());
   });
 
-  test('getPlatformVersion', () async {
+  test('acquireTest', () async {
     AndroidMulticastLock androidMulticastLockPlugin = AndroidMulticastLock();
     MockAndroidMulticastLockPlatform fakePlatform = MockAndroidMulticastLockPlatform();
     AndroidMulticastLockPlatform.instance = fakePlatform;
 
-    expect(await androidMulticastLockPlugin.getPlatformVersion(), '42');
+    expect(await androidMulticastLockPlugin.isHeld(), false);
+    androidMulticastLockPlugin.acquire();
+    expect(await androidMulticastLockPlugin.isHeld(), true);
+  });
+
+  test('releaseTest', () async {
+    AndroidMulticastLock androidMulticastLockPlugin = AndroidMulticastLock();
+    MockAndroidMulticastLockPlatform fakePlatform = MockAndroidMulticastLockPlatform();
+    AndroidMulticastLockPlatform.instance = fakePlatform;
+
+    expect(await androidMulticastLockPlugin.isHeld(), true);
+    androidMulticastLockPlugin.release();
+    expect(await androidMulticastLockPlugin.isHeld(), false);
   });
 }

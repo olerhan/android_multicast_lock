@@ -10,8 +10,17 @@ class MethodChannelAndroidMulticastLock extends AndroidMulticastLockPlatform {
   final methodChannel = const MethodChannel('android_multicast_lock');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<void> acquire() async {
+    return methodChannel.invokeMethod<void>('acquire');
+  }
+
+  @override
+  Future<void> release() async {
+    return methodChannel.invokeMethod<void>('release');
+  }
+
+  @override
+  Future<bool?> isHeld() async {
+    return methodChannel.invokeMethod<bool>('isHeld');
   }
 }
