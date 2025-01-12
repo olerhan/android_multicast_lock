@@ -32,22 +32,18 @@ void main() {
   });
 
   test('acquireTest', () async {
-    AndroidMulticastLock androidMulticastLockPlugin = AndroidMulticastLock();
-    MockAndroidMulticastLockPlatform fakePlatform = MockAndroidMulticastLockPlatform();
-    AndroidMulticastLockPlatform.instance = fakePlatform;
+    AndroidMulticastLockPlatform.instance = MockAndroidMulticastLockPlatform();
 
-    expect(await androidMulticastLockPlugin.isHeld(), false);
-    androidMulticastLockPlugin.acquire();
-    expect(await androidMulticastLockPlugin.isHeld(), true);
+    expect(await AndroidMulticastLock().isHeld(), false);
+    AndroidMulticastLock().acquire();
+    expect(await AndroidMulticastLock().isHeld(), true);
   });
 
   test('releaseTest', () async {
-    AndroidMulticastLock androidMulticastLockPlugin = AndroidMulticastLock();
-    MockAndroidMulticastLockPlatform fakePlatform = MockAndroidMulticastLockPlatform();
-    AndroidMulticastLockPlatform.instance = fakePlatform;
+    AndroidMulticastLockPlatform.instance = MockAndroidMulticastLockPlatform();
 
-    expect(await androidMulticastLockPlugin.isHeld(), true);
-    androidMulticastLockPlugin.release();
-    expect(await androidMulticastLockPlugin.isHeld(), false);
+    expect(await AndroidMulticastLock().isHeld(), true);
+    AndroidMulticastLock().release();
+    expect(await AndroidMulticastLock().isHeld(), false);
   });
 }
