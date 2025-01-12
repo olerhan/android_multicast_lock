@@ -10,18 +10,39 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:android_multicast_lock_example/main.dart';
 
-void main() {
-  testWidgets('Verify Platform version', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:android_multicast_lock/android_multicast_lock_platform_interface.dart';
 
-    // Verify that platform version is retrieved.
+class MockAndroidMulticastLockPlatform
+    with MockPlatformInterfaceMixin
+    implements AndroidMulticastLockPlatform {
+
+  static bool lock_set = false;
+
+  @override
+  Future<void> acquire() async {
+    lock_set = true;
+  }
+
+  @override
+  Future<void> release()  async{
+    lock_set = false;
+  }
+
+  @override
+  Future<bool> isHeld() => Future.value(lock_set);
+}
+
+void main() {
+  AndroidMulticastLockPlatform.instance = MockAndroidMulticastLockPlatform();
+
+  testWidgets('Verify Lock Held', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pump(Duration(seconds: 1));
+
     expect(
-      find.byWidgetPredicate(
-        (Widget widget) => widget is Text &&
-                           widget.data!.startsWith('Running on:'),
-      ),
-      findsOneWidget,
+      find.text('Lock Held: true'),
+      findsOneWidget
     );
   });
 }
