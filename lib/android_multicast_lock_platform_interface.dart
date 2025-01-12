@@ -24,7 +24,7 @@ abstract class AndroidMulticastLockPlatform extends PlatformInterface {
     throw UnimplementedError('release() has not been implemented.');
   }
 
-  Future<bool?> isHeld() {
+  Future<bool> isHeld() {
     throw UnimplementedError('isHeld() has not been implemented.');
   }
 }

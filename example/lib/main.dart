@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> setup() async {
-    final bool? _lock_held = await AndroidMulticastLock().isHeld();
+    final bool _lock_held = await AndroidMulticastLock().isHeld();
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      lock_held = _lock_held ?? false;
+      lock_held = _lock_held;
     });
   }
 

@@ -20,7 +20,7 @@ class MethodChannelAndroidMulticastLock extends AndroidMulticastLockPlatform {
   }
 
   @override
-  Future<bool?> isHeld() async {
-    return methodChannel.invokeMethod<bool>('isHeld');
+  Future<bool> isHeld() async {
+    return await methodChannel.invokeMethod<bool>('isHeld') ?? false;
   }
 }

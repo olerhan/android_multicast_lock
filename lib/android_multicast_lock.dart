@@ -10,7 +10,7 @@ class AndroidMulticastLock {
     return AndroidMulticastLockPlatform.instance.release();
   }
 
-  Future<bool?> isHeld() {
+  Future<bool> isHeld() {
     return AndroidMulticastLockPlatform.instance.isHeld();
   }
 }
